@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+*.tsbuildinfo
+.cache/
+test-results/
+playwright-report/
+.env
+.DS_Store

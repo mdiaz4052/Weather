@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'tests',timeout:60000,use:{viewport:{width:1440,height:1000},baseURL:'http://127.0.0.1:5173',launchOptions:{args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']}},webServer:[{command:'../../.venv/bin/uvicorn weather_api.app:app --app-dir ../../services/weather-api --port 8000',port:8000,reuseExistingServer:!process.env.CI},{command:'npm run dev -- --port 5173',port:5173,reuseExistingServer:!process.env.CI}]});

@@ -1,0 +1,317 @@
+{
+  "$defs": {
+    "Grid": {
+      "properties": {
+        "width": {
+          "maximum": 1440,
+          "minimum": 2,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "maximum": 721,
+          "minimum": 2,
+          "title": "Height",
+          "type": "integer"
+        },
+        "west": {
+          "title": "West",
+          "type": "number"
+        },
+        "south": {
+          "title": "South",
+          "type": "number"
+        },
+        "dx": {
+          "exclusiveMinimum": 0,
+          "title": "Dx",
+          "type": "number"
+        },
+        "dy": {
+          "exclusiveMinimum": 0,
+          "title": "Dy",
+          "type": "number"
+        },
+        "periodic": {
+          "title": "Periodic",
+          "type": "boolean"
+        },
+        "order": {
+          "const": "south_to_north_rows_eastward_columns",
+          "default": "south_to_north_rows_eastward_columns",
+          "title": "Order",
+          "type": "string"
+        }
+      },
+      "required": [
+        "width",
+        "height",
+        "west",
+        "south",
+        "dx",
+        "dy",
+        "periodic"
+      ],
+      "title": "Grid",
+      "type": "object"
+    },
+    "Provenance": {
+      "properties": {
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "synthetic": {
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "retrievedAt": {
+          "format": "date-time",
+          "title": "Retrievedat",
+          "type": "string"
+        },
+        "sourceResolution": {
+          "title": "Sourceresolution",
+          "type": "number"
+        },
+        "transformations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Transformations",
+          "type": "array"
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sourceurl"
+        }
+      },
+      "required": [
+        "source",
+        "synthetic",
+        "retrievedAt",
+        "sourceResolution",
+        "transformations"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Uncertainty": {
+      "properties": {
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "units": {
+          "title": "Units",
+          "type": "string"
+        },
+        "payload": {
+          "title": "Payload",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "source",
+        "metric",
+        "units",
+        "payload",
+        "provenance"
+      ],
+      "title": "Uncertainty",
+      "type": "object"
+    },
+    "Vertical": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "surface",
+            "height_above_ground",
+            "pressure_level",
+            "altitude"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Vertical",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "displayName": {
+      "title": "Displayname",
+      "type": "string"
+    },
+    "physicalQuantity": {
+      "title": "Physicalquantity",
+      "type": "string"
+    },
+    "canonicalUnit": {
+      "title": "Canonicalunit",
+      "type": "string"
+    },
+    "sourceProvider": {
+      "title": "Sourceprovider",
+      "type": "string"
+    },
+    "sourceModel": {
+      "title": "Sourcemodel",
+      "type": "string"
+    },
+    "sourceVariable": {
+      "title": "Sourcevariable",
+      "type": "string"
+    },
+    "runTime": {
+      "format": "date-time",
+      "title": "Runtime",
+      "type": "string"
+    },
+    "validTime": {
+      "format": "date-time",
+      "title": "Validtime",
+      "type": "string"
+    },
+    "forecastLead": {
+      "title": "Forecastlead",
+      "type": "number"
+    },
+    "horizontalGrid": {
+      "$ref": "#/$defs/Grid"
+    },
+    "verticalCoordinate": {
+      "$ref": "#/$defs/Vertical"
+    },
+    "missingValuePolicy": {
+      "const": "NaN_mask",
+      "default": "NaN_mask",
+      "title": "Missingvaluepolicy",
+      "type": "string"
+    },
+    "encoding": {
+      "const": "float32-le",
+      "default": "float32-le",
+      "title": "Encoding",
+      "type": "string"
+    },
+    "temporalKind": {
+      "default": "instant",
+      "enum": [
+        "instant",
+        "interval_mean",
+        "derived"
+      ],
+      "title": "Temporalkind",
+      "type": "string"
+    },
+    "intervalStart": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Intervalstart"
+    },
+    "intervalEnd": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Intervalend"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "uncertainty": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Uncertainty"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "payload": {
+      "title": "Payload",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "displayName",
+    "physicalQuantity",
+    "canonicalUnit",
+    "sourceProvider",
+    "sourceModel",
+    "sourceVariable",
+    "runTime",
+    "validTime",
+    "forecastLead",
+    "horizontalGrid",
+    "verticalCoordinate",
+    "provenance",
+    "payload"
+  ],
+  "title": "FieldDescriptor",
+  "type": "object"
+}
