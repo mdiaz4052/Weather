@@ -11,7 +11,8 @@ dependencies = [
     "numpy>=2,<3",
     "httpx[socks]>=0.28,<1",
     "eccodes>=2.48,<3",
-    "eccodeslib>=2.48,<3",
+    # Later releases currently lack macOS wheels. Keep both desktop architectures supported.
+    "eccodeslib==2.48.0.26",
 ]
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "ruff>=0.12,<1", "jsonschema>=4,<5"]

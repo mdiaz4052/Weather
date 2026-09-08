@@ -32,3 +32,17 @@ jobs:
           name: browser-results
           path: apps/web/test-results
           if-no-files-found: ignore
+  macos-backend:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: ['3.12', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m venv .venv
+      - run: .venv/bin/pip install --require-hashes -r services/weather-api/requirements.lock
+      - run: .venv/bin/pip install --no-deps -e services/weather-api
+      - run: .venv/bin/pytest services/weather-api/tests
