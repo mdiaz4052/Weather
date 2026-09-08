@@ -1,0 +1,31 @@
+name: Phase 0 validation
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: python -m venv .venv
+      - run: .venv/bin/pip install -r services/weather-api/requirements.lock
+      - run: .venv/bin/pip install --no-deps -e services/weather-api
+      - run: .venv/bin/ruff check services scripts
+      - run: .venv/bin/pytest services/weather-api/tests
+      - run: .venv/bin/python scripts/export_contracts.py
+      - run: git diff --exit-code contracts
+      - run: npm run lint && npm run typecheck && npm test && npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-results
+          path: apps/web/test-results
+          if-no-files-found: ignore

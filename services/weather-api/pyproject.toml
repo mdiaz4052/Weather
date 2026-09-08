@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[project]
+name = "weather-api"
+version = "0.0.1"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.141,<0.142",
+    "uvicorn>=0.35,<1",
+    "numpy>=2,<3",
+    "httpx[socks]>=0.28,<1",
+    "eccodes>=2.48,<3",
+    "eccodeslib>=2.48,<3",
+]
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.12,<1", "jsonschema>=4,<5"]
+[tool.pytest.ini_options]
+pythonpath = ["."]
+[tool.ruff]
+line-length = 100
