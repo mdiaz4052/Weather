@@ -1,6 +1,7 @@
 import {test,expect} from '@playwright/test';
 
 test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page})=>{
+ test.setTimeout(150000); // Software-WebGL screenshots are slow on CI runners.
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/');
  await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…',{timeout:30000});
@@ -11,9 +12,10 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  await page.getByLabel('Wind visible',{exact:true}).uncheck();
  await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
  const globeCanvas=page.getByTestId('globe').locator('canvas');
- const thermalImage=await globeCanvas.screenshot();
+ const thermalImage=await globeCanvas.screenshot({path:'test-results/thermal.png'});
  await page.getByLabel('Temperature palette').selectOption('icefire');
- await expect.poll(async()=>!(await globeCanvas.screenshot()).equals(thermalImage)).toBe(true);
+ const icefireImage=await globeCanvas.screenshot({path:'test-results/icefire.png'});
+ expect(icefireImage.equals(thermalImage)).toBe(false);
  await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
  await page.getByLabel('Precipitation visible',{exact:true}).check();
  await page.getByLabel('Wind visible',{exact:true}).uncheck();
