@@ -12,9 +12,11 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  await page.getByLabel('Wind visible',{exact:true}).uncheck();
  await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
  const globeCanvas=page.getByTestId('globe').locator('canvas');
- const thermalImage=await globeCanvas.screenshot({path:'test-results/thermal.png'});
+ const bounds=(await globeCanvas.boundingBox())!;
+ const clip={x:bounds.x+bounds.width*0.35,y:bounds.y+bounds.height*0.35,width:bounds.width*0.3,height:bounds.height*0.3};
+ const thermalImage=await page.screenshot({clip,path:'test-results/thermal.png'});
  await page.getByLabel('Temperature palette').selectOption('icefire');
- const icefireImage=await globeCanvas.screenshot({path:'test-results/icefire.png'});
+ const icefireImage=await page.screenshot({clip,path:'test-results/icefire.png'});
  expect(icefireImage.equals(thermalImage)).toBe(false);
  await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
  await page.getByLabel('Precipitation visible',{exact:true}).check();
