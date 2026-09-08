@@ -8,7 +8,7 @@ The initial Phase 0 application includes the globe, combined weather encodings, 
 
 ## Start on macOS
 
-Install Node.js **22.12 or later** and Python **3.12 or later** once if they are not already installed. Then:
+Requires **macOS 13 or later** for the bundled weather decoding libraries. Install Node.js **22.12 or later** and Python **3.12 or later** once if they are not already installed. Then:
 
 1. Open **Set Up Weather.command**. It installs the locked dependencies.
 2. Open **Start Weather.command**. It starts the API and frontend and opens the browser.
