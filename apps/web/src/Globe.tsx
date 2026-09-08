@@ -72,9 +72,9 @@ export function Globe(props:Props){
       const removeError=v.scene.renderError.addEventListener((_scene,error)=>latest.current.onError(`Rendering failure: ${String(error)}`));
       let start=performance.now(),frames=0;
       const removeTick=v.scene.preRender.addEventListener(()=>{const now=performance.now();material.uniforms.clock=now/1200*latest.current.visual.wind.animation;
-        const wind=layers.current?.wind;if(wind)for(let i=0;i<wind.length;i++)wind.get(i).material.uniforms.clock=material.uniforms.clock;frames++;if(now-start>1500){latest.current.onFps(Math.round(frames*1000/(now-start)));frames=0;start=now;}});
+        const wind=layers.current?.wind;if(wind)for(let i=0;i<wind.length;i++)Object.assign(wind.get(i).material.uniforms,material.uniforms);frames++;if(now-start>1500){latest.current.onFps(Math.round(frames*1000/(now-start)));frames=0;start=now;}});
       updateScale();
-      return()=>{removeMove();removeTick();removeError();handler.destroy();material.destroy();layers.current=null;viewer.current=null;v?.destroy();};
+      return()=>{removeMove();removeTick();removeError();handler.destroy();layers.current=null;viewer.current=null;v?.destroy();material.destroy();};
     }catch(error){latest.current.onError(`Rendering failure: ${String(error)}`);v?.destroy();}
   },[]);
   useEffect(()=>{
@@ -89,7 +89,7 @@ export function Globe(props:Props){
     (l.temp.appearance as C.EllipsoidSurfaceAppearance).material.uniforms.image=scalarCanvas(props,'temperature');
     (l.rain.appearance as C.EllipsoidSurfaceAppearance).material.uniforms.image=scalarCanvas(props,'rain');
     l.temp.show=props.visual.temperature.enabled;l.rain.show=props.visual.rain.enabled;
-    l.wind.removeAll();const w=props.visual.wind;l.wind.show=w.enabled;
+    const w=props.visual.wind;l.wind.show=w.enabled;
     l.material.uniforms.base=w.brightness;l.material.uniforms.pulse=w.pulse;l.material.uniforms.opacity=w.opacity;
     if(!w.enabled)return;
     const scale=scaleAt(viewer.current?.camera.positionCartographic.height??18e6);
@@ -97,13 +97,21 @@ export function Globe(props:Props){
     const field=props.a.fields.get(ids.u);if(!field)return;
     const g=field.descriptor.horizontalGrid;
     const step=(scale==='planetary'?11:scale==='synoptic'?7:2)/Math.max(0.2,w.density);
+    let windIndex=0;
     for(let lat=Math.max(-84,g.south);lat<=Math.min(84,g.south+(g.height-1)*g.dy);lat+=step){
       for(let lon=g.west;lon<g.west+g.width*g.dx;lon+=step/Math.max(0.3,Math.cos(C.Math.toRadians(lat)))){
         const u=valueAt(props.a,props.b,ids.u,lon,lat,props.fraction),v=valueAt(props.a,props.b,ids.v,lon,lat,props.fraction);
         const points=filament(lon,lat,u,v,filamentLength(Math.hypot(u,v),w.length,factor));
-        if(points.length)l.wind.add({positions:points.map(([x,y])=>C.Cartesian3.fromDegrees(x,y,12000)),width:2,material:new C.Material({fabric:{type:'WeatherPulse',uniforms:{...l.material.uniforms}},translucent:true})});
+        if(points.length){
+          const positions=points.map(([x,y])=>C.Cartesian3.fromDegrees(x,y,12000));
+          // Reuse lines and their materials instead of allocating hundreds per tick.
+          if(windIndex<l.wind.length){const line=l.wind.get(windIndex);line.positions=positions;line.show=true;}
+          else l.wind.add({positions,width:2,material:new C.Material({fabric:{type:'WeatherPulse',uniforms:{...l.material.uniforms}},translucent:true})});
+          windIndex++;
+        }
       }
     }
+    for(let i=windIndex;i<l.wind.length;i++)l.wind.get(i).show=false;
   },[props.a,props.b,props.fraction,props.visual]);
   const lastZoom=useRef(0);
   useEffect(()=>{const v=viewer.current;if(v&&props.zoom!==lastZoom.current){const d=props.zoom-lastZoom.current;v.camera.zoomIn(d*v.camera.positionCartographic.height*0.48);lastZoom.current=props.zoom;}},[props.zoom]);

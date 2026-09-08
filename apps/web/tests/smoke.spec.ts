@@ -23,6 +23,18 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  await page.getByLabel('Wind visible',{exact:true}).uncheck();
  await page.getByLabel('Wind visible',{exact:true}).check();
  expect(dataRequests).toBe(0);
+ // Freeze decorative motion: any pixel change must now come from forecast time.
+ await page.getByLabel('Wind visible',{exact:true}).uncheck();
+ await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
+ const initialValue=await page.getByTestId('temperature-value').innerText();
+ await page.getByLabel('Forecast time',{exact:true}).fill('12');
+ await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
+ await expect(page.getByTestId('temperature-value')).not.toHaveText(initialValue);
+ const laterImage=await page.screenshot({clip,path:'test-results/later-time.png'});
+ expect(laterImage.equals(icefireImage)).toBe(false);
+ await page.getByLabel('Forecast time',{exact:true}).fill('0');
+ await expect(page.getByRole('button',{name:'Play',exact:true})).toBeEnabled();
+
  await page.getByRole('button',{name:'Play',exact:true}).click();
  await expect(page.getByTestId('time-state')).toHaveText('Visual interpolation');
  await page.getByRole('button',{name:'Pause',exact:true}).click();
@@ -51,4 +63,44 @@ test('source outage offers synthetic fallback',async({page})=>{
  await expect(page.getByText('NOAA test outage')).toBeVisible();
  await page.getByRole('button',{name:'Use synthetic fixtures'}).click();
  await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
+});
+
+
+test('timeline can pause while buffering, drag during play, and loop',async({page})=>{
+ await page.goto('/');
+ const timeline=page.getByLabel('Forecast time',{exact:true});
+ const play=page.getByRole('button',{name:'Play',exact:true});
+ await expect(play).toBeEnabled();
+ await play.click();
+ await expect(page.getByTestId('time-state')).toHaveText('Visual interpolation');
+ // Grab the actual thumb while the timer is advancing, then drag it.
+ const box=(await timeline.boundingBox())!;
+ const hour=Number(await timeline.inputValue());
+ await page.mouse.move(box.x+8+(box.width-16)*hour/24,box.y+box.height/2);
+ await page.mouse.down();
+ await page.mouse.move(box.x+box.width*0.5,box.y+box.height/2,{steps:8});
+ await page.mouse.up();
+ await expect(play).toBeVisible();
+ await expect.poll(async()=>Number(await timeline.inputValue())).toBeGreaterThan(10);
+ await expect.poll(async()=>Number(await timeline.inputValue())).toBeLessThan(14);
+ // Park immediately before the final boundary and verify automatic wrap.
+ await timeline.fill('23.95');
+ await expect(play).toBeEnabled();
+ await play.click();
+ await expect.poll(async()=>Number(await timeline.inputValue())).toBeLessThan(3);
+ await page.getByRole('button',{name:'Pause',exact:true}).click();
+ // Force a frame transition to buffer; Pause must remain available.
+ await timeline.fill('0');
+ await expect(play).toBeEnabled();
+ let release!:()=>void;
+ const gate=new Promise<void>(resolve=>{release=resolve;});
+ await page.route('**/api/frame?**',async route=>{await gate;await route.continue();});
+ await page.getByLabel('Playback speed').selectOption('4');
+ await play.click();
+ await expect(page.getByText('Loading fields…',{exact:true})).toBeVisible({timeout:15000});
+ await page.getByRole('button',{name:'Pause',exact:true}).click();
+ const stopped=await timeline.inputValue();
+ release();
+ await expect(play).toBeEnabled();
+ expect(await timeline.inputValue()).toBe(stopped);
 });
