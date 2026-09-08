@@ -18,7 +18,14 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  await page.getByLabel('Temperature palette').selectOption('icefire');
  const icefireImage=await page.screenshot({clip,path:'test-results/icefire.png'});
  expect(icefireImage.equals(thermalImage)).toBe(false);
+ await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
+ await page.getByLabel('Precipitation visible',{exact:true}).check();
+ await page.getByLabel('Wind visible',{exact:true}).uncheck();
+ await page.getByLabel('Wind visible',{exact:true}).check();
+ expect(dataRequests).toBe(0);
  // Freeze decorative motion: any pixel change must now come from forecast time.
+ await page.getByLabel('Wind visible',{exact:true}).uncheck();
+ await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
  const initialValue=await page.getByTestId('temperature-value').innerText();
  await page.getByLabel('Forecast time',{exact:true}).fill('12');
  await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
@@ -27,11 +34,7 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  expect(laterImage.equals(icefireImage)).toBe(false);
  await page.getByLabel('Forecast time',{exact:true}).fill('0');
  await expect(page.getByRole('button',{name:'Play',exact:true})).toBeEnabled();
- await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
- await page.getByLabel('Precipitation visible',{exact:true}).check();
- await page.getByLabel('Wind visible',{exact:true}).uncheck();
- await page.getByLabel('Wind visible',{exact:true}).check();
- expect(dataRequests).toBe(0);
+
  await page.getByRole('button',{name:'Play',exact:true}).click();
  await expect(page.getByTestId('time-state')).toHaveText('Visual interpolation');
  await page.getByRole('button',{name:'Pause',exact:true}).click();
