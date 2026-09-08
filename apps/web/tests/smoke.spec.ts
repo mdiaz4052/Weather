@@ -8,7 +8,12 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  await expect(page.getByText(/Rendering failure/)).toHaveCount(0);
  await expect.poll(()=>page.locator('.performance').innerText()).toMatch(/[1-9][0-9]* FPS/);
  let dataRequests=0;page.on('request',r=>{if(r.url().includes('/api/'))dataRequests++;});
+ await page.getByLabel('Wind visible',{exact:true}).uncheck();
+ await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
+ const globeCanvas=page.getByTestId('globe').locator('canvas');
+ const thermalImage=await globeCanvas.screenshot();
  await page.getByLabel('Temperature palette').selectOption('icefire');
+ await expect.poll(async()=>!(await globeCanvas.screenshot()).equals(thermalImage)).toBe(true);
  await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
  await page.getByLabel('Precipitation visible',{exact:true}).check();
  await page.getByLabel('Wind visible',{exact:true}).uncheck();
@@ -21,7 +26,7 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  await expect(page.getByTestId('time-state')).toHaveText('Model timestep');
  await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
  const before=await page.locator('.coordinates').innerText();
- await page.getByTestId('globe').locator('canvas').click({position:{x:300,y:260}});
+ await page.getByTestId('globe').locator('canvas').click();
  await expect(page.locator('.coordinates')).not.toHaveText(before);
  await page.getByRole('button',{name:'Zoom in',exact:true}).click();
  await page.getByRole('button',{name:'Zoom in',exact:true}).click();

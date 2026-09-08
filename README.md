@@ -4,7 +4,7 @@ An interactive browser-based atmospheric laboratory. Explore temperature, precip
 
 ## Status
 
-Phase 0 implementation is ready for browser acceptance testing. Recovered overlapping implementations have been consolidated into one field contract and one application. Local build, type checking, lint and deterministic tests pass. A live NOAA GFS regional retrieval and ecCodes decoding succeeded. The available cloud browser cannot initialize WebGL, so visual acceptance and the reference-desktop 30 FPS target are **not yet verified**. Do not treat Phase 0 as accepted until the browser suite and desktop scenarios pass.
+The initial Phase 0 application includes the globe, combined weather encodings, a playable forecast timeline, NOAA ingestion and offline fixtures. Build, type checking, lint, unit tests and browser workflows run in CI. A live NOAA GFS regional retrieval and ecCodes decoding have also succeeded. Full live global playback and the reference-desktop 30 FPS target still need a desktop acceptance run; merging the foundation does not claim those checks are complete.
 
 ## Start on macOS
 
