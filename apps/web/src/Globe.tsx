@@ -53,7 +53,8 @@ export function Globe(props:Props){
       void C.TileMapServiceImageryProvider.fromUrl(C.buildModuleUrl('Assets/Textures/NaturalEarthII')).then(provider=>{if(!currentViewer.isDestroyed())currentViewer.imageryLayers.addImageryProvider(provider);}).catch(error=>latest.current.onError(`Base imagery unavailable: ${String(error)}`));
       function scalar(height:number,rectangle=C.Rectangle.fromDegrees(-180,-90,180,90)){
         const empty=document.createElement('canvas');empty.width=2;empty.height=2;
-        const material=new C.Material({fabric:{type:'WeatherScalar',uniforms:{image:empty},components:{diffuse:'texture(image, clamp(materialInput.st, 0.001, 0.999)).rgb',alpha:'texture(image, clamp(materialInput.st, 0.001, 0.999)).a'}},translucent:true});
+        const material=new C.Material({fabric:{type:'WeatherScalar',uniforms:{image:C.Material.DefaultImageId},components:{diffuse:'texture(image, clamp(materialInput.st, 0.001, 0.999)).rgb',alpha:'texture(image, clamp(materialInput.st, 0.001, 0.999)).a'}},translucent:true});
+        material.uniforms.image=empty;
         return v!.scene.primitives.add(new C.Primitive({geometryInstances:new C.GeometryInstance({geometry:new C.RectangleGeometry({rectangle,height,granularity:C.Math.toRadians(2),vertexFormat:C.EllipsoidSurfaceAppearance.VERTEX_FORMAT})}),appearance:new C.EllipsoidSurfaceAppearance({aboveGround:true,material,translucent:true,renderState:{depthTest:{enabled:true},depthMask:false,blending:C.BlendingState.ALPHA_BLEND}}),asynchronous:false}));
       }
       const material=new C.Material({fabric:{type:'WeatherPulse',uniforms:{clock:0,base:0.3,pulse:1,opacity:0.8},source:`czm_material czm_getMaterial(czm_materialInput materialInput) {

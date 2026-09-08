@@ -30,6 +30,7 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  await page.getByText('Source / details',{exact:true}).click();
  await expect(page.getByText(/Analytic fixture sampled/).first()).toBeVisible();
  await page.screenshot({path:'test-results/laboratory.png',fullPage:true});
+ await expect(page.getByText(/Rendering failure/)).toHaveCount(0);
  expect(errors).toEqual([]);
 });
 
