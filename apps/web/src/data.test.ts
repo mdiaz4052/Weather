@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {decodeBinary,sample,temporal,windFrom,speed,scaleAt,lodAt,celsius,fahrenheit,mmHour,FrameCache,framePosition,type Loaded,type Descriptor} from './fields';
+import {decodeBinary,sample,temporal,windFrom,speed,scaleAt,lodAt,celsius,fahrenheit,mmHour,FrameCache,framePosition,forecastSteps,type Run,type Loaded,type Descriptor} from './fields';
 import {normalize,color,filament,filamentLength,encode,registry} from './encoding';
 const grid={width:4,height:2,west:-180,south:-90,dx:90,dy:180,periodic:true,order:'south_to_north_rows_eastward_columns' as const};
 describe('physical and visual boundaries',()=>{
@@ -12,3 +12,11 @@ describe('physical and visual boundaries',()=>{
  it('uses fixed domains, conversions and linear-light color',()=>{expect(normalize(273,233,313)).toBe(.5);expect(normalize(NaN,0,1)).toBeNaN();expect(color(.5,['#000000','#ffffff'])[0]).toBe(188);expect(celsius(273.15)).toBe(0);expect(fahrenheit(273.15)).toBe(32);expect(mmHour(.001)).toBe(3.6);expect(encode(registry.get('rain')!,0)).toBe(0);});
  it('classifies scale and bounds frame-cache size',()=>{expect(scaleAt(9e6)).toBe('planetary');expect(lodAt(scaleAt(1e5))).toBe(2);const cache=new FrameCache(2);cache.set('1',{} as Loaded);cache.set('2',{} as Loaded);cache.get('1');cache.set('3',{} as Loaded);expect(cache.get('2')).toBeUndefined();expect(cache.size).toBe(2);expect(framePosition(1.5)).toEqual({low:0,high:3,fraction:.5});});
 });
+
+ it('derives sorted unique forecast steps from the run without inventing intervals',()=>{
+   const initializedAt='2026-01-01T00:00:00Z';
+   const run={initializedAt,availableValidTimes:['2026-01-02T00:00:00Z','2026-01-01T03:00:00Z','2026-01-01T09:00:00Z','2026-01-01T03:00:00Z']} as Run;
+   expect(forecastSteps(run).map(step=>step.lead)).toEqual([3,9,24]);
+   expect(forecastSteps(undefined)).toEqual([]);
+   expect(forecastSteps({...run,availableValidTimes:[initializedAt]})).toEqual([{valid:Date.parse(initializedAt),lead:0}]);
+ });
