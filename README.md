@@ -4,7 +4,7 @@ An interactive browser-based atmospheric laboratory. Explore temperature, precip
 
 ## Status
 
-The initial Phase 0 application includes the globe, combined weather encodings, a playable forecast timeline, NOAA ingestion and offline fixtures. Build, type checking, lint, unit tests and browser workflows run in CI. A live NOAA GFS regional retrieval and ecCodes decoding have also succeeded. Full live global playback and the reference-desktop 30 FPS target still need a desktop acceptance run; merging the foundation does not claim those checks are complete.
+The initial Phase 0 application includes the globe, combined weather encodings, a playable forecast timeline, NOAA ingestion and deterministic test fixtures. Build, type checking, lint, unit tests and browser workflows run in CI. A live NOAA GFS regional retrieval and ecCodes decoding have also succeeded. Full live global playback and the reference-desktop 30 FPS target still need a desktop acceptance run; merging the foundation does not claim those checks are complete.
 
 ## Start on macOS
 
@@ -16,15 +16,15 @@ Requires **macOS 13 or later** for the bundled weather decoding libraries. Insta
 
 If macOS will not execute a downloaded launcher, use Terminal with `bash scripts/setup.sh`, then `bash scripts/dev.sh --open`. Both launchers call these same scripts. Open http://localhost:5173 if the browser does not open automatically.
 
-Requires a desktop browser with WebGL2. There is no Cesium ion account or API key. Base imagery is bundled with Cesium, and synthetic fixture mode works without external data access after setup. Mobile optimization and cloud deployment are outside Phase 0.
+Requires a desktop browser with WebGL2. There is no Cesium ion account or API key. Base imagery is bundled with Cesium. Weather defaults to NOAA GFS and requires NOAA access for uncached frames. Mobile optimization and cloud deployment are outside Phase 0.
 
 ## Explore
 
 The left panel controls the three independently composable representations. Temperature uses a fixed physical range; changing its palette does not download data again. Wind filaments point along the U/V vector, length represents speed, and the traveling light pulse indicates direction. Pulse speed is a visual parameter.
 
-Click the Earth to inspect numerical values. The bottom bar provides playback, model-frame steps, scrubbing and speed. Times between the three-hour source frames are explicitly labeled visual interpolation. Missing values remain masked. Synthetic timestamps are labeled as fixture data, never observations.
+Click the Earth to inspect numerical values. The bottom bar provides playback, model-frame steps, scrubbing and speed. Each timeline stop is one forecast time listed by the selected run; labels, frame count and previous/next controls follow that list, including uneven intervals. Playback shows one frame per second at 1×, waits for loading, and loops. Missing values remain masked.
 
-Choose **Recent NOAA GFS** to discover a recent model cycle. The initial live window is 0–24 h at three-hour steps. Fields are verified on retrieval; missing fields are listed under Source / details. Source failures offer a switch back to synthetic fixtures. Previously retrieved normalized grids are cached on disk. Uncached frames still need NOAA access.
+The app opens with **Recent NOAA GFS** and discovers a recent model cycle. The initial live window is 0–24 h at three-hour steps. Fields are verified on retrieval; missing fields are listed under Source / details. Source failures show an error and a retry button. Synthetic fixtures are retained only for automated tests, with no user-facing selection or fallback. Previously retrieved normalized grids are cached on disk. Uncached frames still need NOAA access.
 
 Zoom changes data resolution: 1° globally, 0.5° at synoptic scale and 0.25° in bounded regional views. Views near the antimeridian retain global 0.5° coverage. This is rendering detail, not additional meteorological information.
 

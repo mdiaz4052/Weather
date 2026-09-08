@@ -76,3 +76,12 @@ export class FrameCache{
   set(key:string,value:Loaded){this.entries.delete(key);this.entries.set(key,value);while(this.entries.size>this.capacity)this.entries.delete(this.entries.keys().next().value!);}
   get size(){return this.entries.size;}
 }
+
+/** The selected run owns the timeline, including nonuniform spacing and shorter runs. */
+export function forecastSteps(run:Run|undefined){
+  if(!run)return [];
+  const initialized=Date.parse(run.initializedAt);
+  return [...new Set(run.availableValidTimes.map(Date.parse))]
+    .filter(valid=>Number.isFinite(valid)&&valid>=initialized)
+    .sort((a,b)=>a-b).map(valid=>({valid,lead:(valid-initialized)/3600000}));
+}

@@ -1,6 +1,23 @@
 import {test,expect} from '@playwright/test';
 
-test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page})=>{
+// Deterministic transport double: production always requests NOAA; tests avoid external downloads.
+test.beforeEach(async({page})=>{
+ await page.route('**/api/runs?source=gfs',async route=>{
+   const response=await route.fetch({url:route.request().url().replace('source=gfs','source=fixture')});
+   const data=await response.json(),run=data.runs[0];
+   const times=[0,3,9,24].map(h=>new Date(Date.parse(run.initializedAt)+h*3600000).toISOString());
+   await route.fulfill({json:{runs:[{...run,availableValidTimes:times},{...run,runId:'short-run',availableValidTimes:times.slice(1,2)}]}});
+ });
+ await page.route('**/api/frame?**',async route=>{
+   const url=new URL(route.request().url());
+   expect(url.searchParams.get('source')).toBe('gfs');
+   expect([0,3,9,24]).toContain(Number(url.searchParams.get('lead')));
+   url.searchParams.set('source','fixture');url.searchParams.set('run','fixture');
+   const response=await route.fetch({url:url.toString()});await route.fulfill({response});
+ });
+});
+
+test('NOAA interface with test fields: globe, mappings, time, inspection and LOD',async({page})=>{
  test.setTimeout(150000); // Software-WebGL screenshots are slow on CI runners.
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/');
@@ -27,7 +44,7 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  await page.getByLabel('Wind visible',{exact:true}).uncheck();
  await page.getByLabel('Precipitation visible',{exact:true}).uncheck();
  const initialValue=await page.getByTestId('temperature-value').innerText();
- await page.getByLabel('Forecast time',{exact:true}).fill('12');
+ await page.getByLabel('Forecast time',{exact:true}).fill('2');
  await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
  await expect(page.getByTestId('temperature-value')).not.toHaveText(initialValue);
  const laterImage=await page.screenshot({clip,path:'test-results/later-time.png'});
@@ -36,9 +53,9 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  await expect(page.getByRole('button',{name:'Play',exact:true})).toBeEnabled();
 
  await page.getByRole('button',{name:'Play',exact:true}).click();
- await expect(page.getByTestId('time-state')).toHaveText('Visual interpolation');
+ await expect.poll(async()=>Number(await page.getByLabel('Forecast time',{exact:true}).inputValue())).toBeGreaterThan(0);
  await page.getByRole('button',{name:'Pause',exact:true}).click();
- await page.getByLabel('Forecast time',{exact:true}).fill('6');
+ await page.getByLabel('Forecast time',{exact:true}).fill('1');
  await expect(page.getByTestId('time-state')).toHaveText('Model timestep');
  await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
  const before=await page.locator('.coordinates').innerText();
@@ -55,16 +72,19 @@ test('fixture laboratory: globe, mappings, time, inspection and LOD',async({page
  expect(errors).toEqual([]);
 });
 
-test('source outage offers synthetic fallback',async({page})=>{
- await page.route('**/api/runs?source=gfs',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({detail:'NOAA test outage'})}));
+test('NOAA outage offers retry without synthetic fallback',async({page})=>{
+ let fail=true;
+ await page.route('**/api/runs?source=gfs',async route=>{
+   if(fail)await route.fulfill({status:503,json:{detail:'NOAA test outage'}});
+   else await route.fallback();
+ });
  await page.goto('/');
- await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
- await page.getByLabel('Data source',{exact:true}).selectOption('gfs');
  await expect(page.getByText('NOAA test outage')).toBeVisible();
- await page.getByRole('button',{name:'Use synthetic fixtures'}).click();
+ await expect(page.getByRole('button',{name:'Use synthetic fixtures'})).toHaveCount(0);
+ await expect(page.getByLabel('Forecast time',{exact:true})).toBeDisabled();
+ fail=false;await page.getByRole('button',{name:'Retry source'}).click();
  await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
 });
-
 
 test('timeline can pause while buffering, drag during play, and loop',async({page})=>{
  await page.goto('/');
@@ -72,29 +92,29 @@ test('timeline can pause while buffering, drag during play, and loop',async({pag
  const play=page.getByRole('button',{name:'Play',exact:true});
  await expect(play).toBeEnabled();
  await play.click();
- await expect(page.getByTestId('time-state')).toHaveText('Visual interpolation');
+ await expect.poll(async()=>Number(await page.getByLabel('Forecast time',{exact:true}).inputValue())).toBeGreaterThan(0);
  // Grab the actual thumb while the timer is advancing, then drag it.
  const box=(await timeline.boundingBox())!;
  const hour=Number(await timeline.inputValue());
- await page.mouse.move(box.x+8+(box.width-16)*hour/24,box.y+box.height/2);
+ await page.mouse.move(box.x+8+(box.width-16)*hour/3,box.y+box.height/2);
  await page.mouse.down();
  await page.mouse.move(box.x+box.width*0.5,box.y+box.height/2,{steps:8});
  await page.mouse.up();
  await expect(play).toBeVisible();
- await expect.poll(async()=>Number(await timeline.inputValue())).toBeGreaterThan(10);
- await expect.poll(async()=>Number(await timeline.inputValue())).toBeLessThan(14);
+ await expect.poll(async()=>Number(await timeline.inputValue())).toBeGreaterThan(0);
+ await expect.poll(async()=>Number(await timeline.inputValue())).toBeLessThan(3);
  // Park immediately before the final boundary and verify automatic wrap.
- await timeline.fill('23.95');
+ await timeline.fill('3');
  await expect(play).toBeEnabled();
  await play.click();
  await expect.poll(async()=>Number(await timeline.inputValue())).toBeLessThan(3);
  await page.getByRole('button',{name:'Pause',exact:true}).click();
- // Force a frame transition to buffer; Pause must remain available.
- await timeline.fill('0');
+ // Reload so the bounded cache cannot hide the blocked network transition.
+ await page.reload();
  await expect(play).toBeEnabled();
  let release!:()=>void;
  const gate=new Promise<void>(resolve=>{release=resolve;});
- await page.route('**/api/frame?**',async route=>{await gate;await route.continue();});
+ await page.route('**/api/frame?**',async route=>{await gate;await route.fallback();});
  await page.getByLabel('Playback speed').selectOption('4');
  await play.click();
  await expect(page.getByText('Loading fields…',{exact:true})).toBeVisible({timeout:15000});
@@ -103,4 +123,29 @@ test('timeline can pause while buffering, drag during play, and loop',async({pag
  release();
  await expect(play).toBeEnabled();
  expect(await timeline.inputValue()).toBe(stopped);
+});
+
+
+test('timeline follows uneven run times and resets for a single-frame run',async({page})=>{
+ await page.goto('/');
+ const timeline=page.getByLabel('Forecast time',{exact:true});
+ await expect(page.getByRole('button',{name:'Play',exact:true})).toBeEnabled();
+ await expect(page.getByLabel('Data source',{exact:true})).toHaveValue('gfs');
+ await expect(page.getByLabel('Fixture',{exact:true})).toHaveCount(0);
+ await expect(timeline).toHaveAttribute('max','3');
+ await expect(timeline).toHaveAttribute('step','1');
+ await expect(page.locator('.ticks span')).toHaveText(['+0h','+3h','+9h','+24h']);
+ await page.getByRole('button',{name:'Next model frame'}).click();
+ await page.getByRole('button',{name:'Next model frame'}).click();
+ await expect(timeline).toHaveValue('2');
+ await expect(timeline).toHaveAttribute('aria-valuetext',/\+9 hours/);
+ await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
+ await page.getByRole('button',{name:'Previous model frame'}).click();
+ await expect(timeline).toHaveValue('1');
+ await page.getByLabel('Model run',{exact:true}).selectOption('short-run');
+ await expect(timeline).toHaveValue('0');
+ await expect(timeline).toBeDisabled();
+ await expect(page.locator('.ticks span')).toHaveText(['+3h']);
+ await expect(page.getByRole('button',{name:'Play',exact:true})).toBeDisabled();
+ await expect(page.getByTestId('temperature-value')).not.toHaveText('Loading…');
 });
