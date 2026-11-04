@@ -20,6 +20,17 @@ Concise development history, not a transcript. Git is the source-change history;
 
 `python tools/check_specs.py` passed: 18 required paths, 5 JSON files, four candidate products, Python syntax, local Markdown links, illustrative examples and exact capacity-report reproducibility. `git diff --check` also passed for tracked changes; the full staged tree is checked before committing. Final Git status is verified after the specification commit. M0 completion means the artifacts are delivered and checked; architecture proposals and provider integrations remain open to evidence and user review.
 
+## W-20261103-02 — Quick next-steps page and completion workflow
+
+- Date: 2026-11-03, America/New_York. Task: T-015. Milestone: M0 foundation maintenance.
+- Tool: ChatGPT / Codex Desktop. Model: GPT-6 family reported by runtime instructions; exact model version unavailable.
+- Changed: added root `NEXT.md` with five plain-language steps toward M1a and the source-account setup needed from the user. Linked it from the README and detailed plan. Updated `AGENTS.md` so every contributor checks it before the final response for every completed task, including documentation work, and records the review even if unchanged.
+- Decision: D-010 captures the user's confirmed format and update cadence. T-015 records the completed documentation task.
+- NEXT review: checked against current status and T-001..T-005; this task creates the initial summary. Implementation has not started; local setup can proceed while ERA5 access is arranged.
+- Validation: `python tools/check_specs.py` passed (19 required paths, five JSON files, four candidate products); `git diff --check` passed. The skeleton checker now requires `NEXT.md` and checks its local file links with the existing Markdown checks.
+- Limitations: this is a documentation/workflow change; no app code or provider integrations were added.
+- Next: T-002 local setup checks and T-001 bounded source retrieval, with user source setup needed for the latter.
+
 ## Template for later work
 
 ```text
@@ -30,6 +41,7 @@ Changed and why:
 Evidence actually collected:
 Limitations or failed attempts:
 Decisions / experiments / feedback IDs:
+NEXT.md review (updated, or checked; no changes needed):
 Next action and dependencies:
 Commit reference if useful (avoid requiring a self-referential commit hash):
 ```

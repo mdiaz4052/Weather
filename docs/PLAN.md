@@ -12,6 +12,8 @@ Task states: `ready`, `in_progress`, `blocked`, `done`, `deferred`, `superseded`
 
 Every task needs an ID, goal, expected artifact, acceptance evidence, and dependency where relevant. Add an owner/tool while active; do not preassign all future work to agents. Estimates remain ranges after measurement, not fictional deadlines.
 
+Keep [NEXT.md](../NEXT.md) as the user's plain-language summary of the next 3-5 steps, their milestone, and any needed user input. Every contributor checks it at the end of each completed task before providing the final response, updates it when needed, and records the review in the worklog. The detailed plan remains here.
+
 ## Vision
 
 An intuitive personal globe with broad, trustworthy climate data, genuine historical playback, place explanations, and eventually comparisons and educational/public use.
@@ -25,6 +27,7 @@ Goal G0: another person or tool can understand the project and implement the nex
 | Task | State | Artifact / acceptance |
 | --- | --- | --- |
 | T-000 | done | Local Git, specification, source research, skeleton/contracts, decisions/worklog, bounded capacity experiment, and passing skeleton checks. See W-20261103-01. Proposed architecture and integration gates remain explicit. |
+| T-015 | done | Add the user's quick next-steps page and require every contributor to check it before each completed task's final response. See W-20261103-02 and D-010. |
 
 M0 is a foundation deliverable, not a declaration that the user approved every proposed stack choice or that any climate connector works.
 

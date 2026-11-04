@@ -19,6 +19,7 @@ Session zero delivers the implementation specification and repository skeleton. 
 
 | Start here | Purpose |
 | --- | --- |
+| [What's next](NEXT.md) | One-screen summary of next steps and anything needed from you |
 | [Current state](docs/STATUS.md) | Confirmed choices, implementation status and open questions |
 | [Product specification](docs/SPECIFICATION.md) | Principles, UX, scope and acceptance criteria |
 | [Architecture](docs/ARCHITECTURE.md) | Modules, API, persistence, playback and resource management |

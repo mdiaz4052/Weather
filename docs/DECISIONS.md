@@ -72,3 +72,11 @@ Append new decisions; supersede old entries explicitly. Date, status, rationale,
 - Reason: separates scientific processing from a globally navigable browser interface while keeping deployment small.
 - Consequence: verify Windows dependencies and polar/daily playback behavior before committing to package versions or a complex tiling stack. No running app is implied by the skeleton.
 - Revisit: spike failure or a materially simpler architecture satisfying the same requirements.
+
+## D-010 — A quick next-steps page for the user
+
+- Date: 2026-11-03. Status: confirmed by the user.
+- Decision: root `NEXT.md` summarizes the next 3-5 concrete steps, the milestone they advance, and actions or decisions needed from the user, in plain language with links to details. Keep it roughly one screen.
+- Reason: the user wants a quick way to see what comes next without reading the full implementation plan.
+- Consequence: every contributor checks the page at the end of every completed work task, before the final response, updates it if needed, and records that review in the worklog. A review can conclude that no changes are needed. The rolling plan remains the detailed planning record.
+- Revisit: adjust the format based on the user's experience reading it.

@@ -25,7 +25,7 @@ def main():
             errors.append(message)
 
     required_paths = [
-        "README.md", "AGENTS.md", "docs/STATUS.md", "docs/SPECIFICATION.md",
+        "README.md", "NEXT.md", "AGENTS.md", "docs/STATUS.md", "docs/SPECIFICATION.md",
         "docs/ARCHITECTURE.md", "docs/SCIENCE.md", "docs/SOURCES.md",
         "docs/PLAN.md", "docs/DECISIONS.md", "docs/EXPERIMENTS.md",
         "docs/FEEDBACK.md", "docs/WORKLOG.md", "docs/PSEUDOCODE.md",
