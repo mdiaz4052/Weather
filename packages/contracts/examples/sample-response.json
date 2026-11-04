@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1",
+  "example_only": true,
+  "execution_plan_id": "illustrative-plan-not-a-real-data-result",
+  "snapshot_id": "illustrative-snapshot-not-acquired",
+  "frame_id": "2020-01-01",
+  "requested_point": {"latitude": 40.7, "longitude": -74.0},
+  "status": "not_prepared",
+  "value": null,
+  "units": "degC",
+  "quantity": "air_temperature_2m",
+  "statistic": "daily_mean",
+  "time_bounds": ["2020-01-01T00:00:00Z", "2020-01-02T00:00:00Z"],
+  "calendar": "proleptic_gregorian",
+  "selection_method": "nearest_native_cell",
+  "representative_cell": null,
+  "coverage_fraction": null,
+  "uncertainty": {"status": "not_evaluated", "value": null},
+  "provenance_url": null
+}

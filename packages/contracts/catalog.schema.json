@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:climaps:catalog:0.1",
+  "title": "CliMaps candidate-source catalog v0.1",
+  "type": "object",
+  "required": ["schema_version", "reviewed_on", "datasets"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "0.1"},
+    "reviewed_on": {"type": "string", "format": "date"},
+    "datasets": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/dataset"}}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "strings": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "capabilities": {
+      "type": "object",
+      "required": ["documented", "to_verify", "implemented", "tested"],
+      "properties": {
+        "documented": {"$ref": "#/$defs/strings"},
+        "to_verify": {"$ref": "#/$defs/strings"},
+        "implemented": {"$ref": "#/$defs/strings"},
+        "tested": {"$ref": "#/$defs/strings"}
+      },
+      "additionalProperties": false
+    },
+    "variable": {
+      "type": "object",
+      "required": ["id", "provider_name", "native_units", "proposed_statistics"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "provider_name": {"type": ["string", "null"]},
+        "native_units": {"type": ["string", "null"]},
+        "proposed_statistics": {"$ref": "#/$defs/strings"}
+      },
+      "additionalProperties": false
+    },
+    "dataset": {
+      "type": "object",
+      "required": ["id", "provider", "product", "product_version", "kind", "method_category", "readiness", "documentation_url", "variables", "documented_coverage", "discovered_availability", "native_metadata_validated", "access", "rights", "capabilities", "evidence", "caveats"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9.-]+$"},
+        "provider": {"type": "string"},
+        "product": {"type": "string"},
+        "product_version": {"type": "string"},
+        "kind": {"enum": ["scalar_grid", "vector_grid", "station_series", "imagery", "polygon"]},
+        "method_category": {"type": "string"},
+        "readiness": {"enum": ["candidate", "implemented", "validated", "operational", "retired"]},
+        "documentation_url": {"type": "string", "format": "uri"},
+        "variables": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/variable"}},
+        "documented_coverage": {"type": "object"},
+        "discovered_availability": {"type": ["object", "null"]},
+        "native_metadata_validated": {"type": "boolean"},
+        "access": {"type": "object", "required": ["method", "account_required", "cost_class", "terms_acceptance_required"]},
+        "rights": {"type": "object", "required": ["documentation_label", "review_state", "redistribution_verified"]},
+        "capabilities": {"$ref": "#/$defs/capabilities"},
+        "evidence": {"type": "object", "required": ["documentation_checked_on", "retrieval_test", "numeric_validation"]},
+        "caveats": {"$ref": "#/$defs/strings"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

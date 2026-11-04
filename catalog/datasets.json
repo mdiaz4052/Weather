@@ -1,0 +1,91 @@
+{
+  "$schema": "../packages/contracts/catalog.schema.json",
+  "schema_version": "0.1",
+  "reviewed_on": "2026-11-03",
+  "datasets": [
+    {
+      "id": "copernicus.era5.daily.single-levels",
+      "provider": "Copernicus Climate Change Service / ECMWF",
+      "product": "ERA5 post-processed daily statistics on single levels",
+      "product_version": "Resolve input ERA5/ERA5T and retrieval-time processing version per snapshot",
+      "kind": "scalar_grid",
+      "method_category": "reanalysis",
+      "readiness": "candidate",
+      "documentation_url": "https://cds.climate.copernicus.eu/datasets/derived-era5-single-levels-daily-statistics?tab=overview",
+      "variables": [
+        {"id": "air_temperature_2m", "provider_name": "2m_temperature", "native_units": "K", "proposed_statistics": ["daily_mean", "daily_min", "daily_max"]}
+      ],
+      "documented_coverage": {"start": "1940-01-01", "end": "provider-described present", "support": "daily", "grid_degrees": [0.25, 0.25], "domain": "global"},
+      "discovered_availability": null,
+      "native_metadata_validated": false,
+      "access": {"method": "CDS API", "account_required": true, "cost_class": "free_account", "terms_acceptance_required": true},
+      "rights": {"documentation_label": "CC-BY license linked by provider; capture exact applicable terms at integration", "review_state": "pending_integration_review", "redistribution_verified": false},
+      "capabilities": {"documented": ["scalar_grid", "daily"], "to_verify": ["region_subset", "requested_grid", "uncertainty"], "implemented": [], "tested": []},
+      "evidence": {"documentation_checked_on": "2026-11-03", "retrieval_test": "not_run", "numeric_validation": "not_run"},
+      "caveats": ["Statistics are calculated at retrieval time", "Preserve input sampling frequency and UTC offset", "Discover actual recent availability and provisional status", "No connector is implemented"]
+    },
+    {
+      "id": "copernicus.era5.hourly.single-levels",
+      "provider": "Copernicus Climate Change Service / ECMWF",
+      "product": "ERA5 hourly data on single levels",
+      "product_version": "Resolve ERA5/ERA5T per acquired asset and checksum",
+      "kind": "scalar_grid",
+      "method_category": "reanalysis",
+      "readiness": "candidate",
+      "documentation_url": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
+      "variables": [
+        {"id": "air_temperature_2m", "provider_name": "2m_temperature", "native_units": "K", "proposed_statistics": ["instantaneous_hourly"]}
+      ],
+      "documented_coverage": {"start": "1940-01-01", "end": "provider-described present", "support": "hourly", "grid_degrees": [0.25, 0.25], "domain": "global"},
+      "discovered_availability": null,
+      "native_metadata_validated": false,
+      "access": {"method": "CDS API", "account_required": true, "cost_class": "free_account", "terms_acceptance_required": true},
+      "rights": {"documentation_label": "CC-BY license linked by provider; capture exact applicable terms at integration", "review_state": "pending_integration_review", "redistribution_verified": false},
+      "capabilities": {"documented": ["scalar_grid", "hourly", "region_subset", "temporal_subset"], "to_verify": ["requested_grid", "uncertainty"], "implemented": [], "tested": []},
+      "evidence": {"documentation_checked_on": "2026-11-03", "retrieval_test": "not_run", "numeric_validation": "not_run"},
+      "caveats": ["Start with short regional windows", "Do not request full global hourly history on startup", "Native payload metadata must be validated"]
+    },
+    {
+      "id": "noaa.oisst.v2.1.daily",
+      "provider": "NOAA NCEI",
+      "product": "Optimum Interpolation Sea Surface Temperature",
+      "product_version": "2.1",
+      "kind": "scalar_grid",
+      "method_category": "observation_based_analysis",
+      "readiness": "candidate",
+      "documentation_url": "https://www.ncei.noaa.gov/products/optimum-interpolation-sst",
+      "variables": [
+        {"id": "sea_surface_temperature", "provider_name": "sst (verify on actual file)", "native_units": null, "proposed_statistics": ["provider_daily_analysis"]}
+      ],
+      "documented_coverage": {"start": "1981-09-01", "end": "provider-described present", "support": "daily", "grid_degrees": [0.25, 0.25], "domain": "global_ocean"},
+      "discovered_availability": null,
+      "native_metadata_validated": false,
+      "access": {"method": "anonymous HTTPS NetCDF", "account_required": false, "cost_class": "free", "terms_acceptance_required": false},
+      "rights": {"documentation_label": "Record provider use constraints, citation and asset metadata at integration", "review_state": "pending_integration_review", "redistribution_verified": false},
+      "capabilities": {"documented": ["scalar_grid", "daily", "uncertainty"], "to_verify": ["temporal_subset", "region_subset"], "implemented": [], "tested": []},
+      "evidence": {"documentation_checked_on": "2026-11-03", "retrieval_test": "not_run", "numeric_validation": "not_run"},
+      "caveats": ["Land is not applicable", "Preserve masks, interpolation error meaning and preliminary/final status", "Published directory viewed; file retrieval not tested"]
+    },
+    {
+      "id": "noaa.gpcp.v1.3.daily",
+      "provider": "NOAA NCEI / GPCP",
+      "product": "GPCP Daily Climate Data Record",
+      "product_version": "1.3 (verify selected asset family at integration)",
+      "kind": "scalar_grid",
+      "method_category": "satellite_gauge_analysis",
+      "readiness": "candidate",
+      "documentation_url": "https://www.ncei.noaa.gov/products/climate-data-records/precipitation-gpcp-daily",
+      "variables": [
+        {"id": "precipitation_water_equivalent", "provider_name": null, "native_units": null, "proposed_statistics": ["provider_daily_precipitation"]}
+      ],
+      "documented_coverage": {"start": "1996-10-01", "end": "provider-described present", "support": "daily", "grid_degrees": [1.0, 1.0], "domain": "global"},
+      "discovered_availability": null,
+      "native_metadata_validated": false,
+      "access": {"method": "provider-linked download service; endpoint to validate", "account_required": false, "cost_class": "free", "terms_acceptance_required": false},
+      "rights": {"documentation_label": "Use agreement and citation review required before operational status", "review_state": "pending_integration_review", "redistribution_verified": false},
+      "capabilities": {"documented": ["scalar_grid", "daily"], "to_verify": ["temporal_subset", "region_subset", "uncertainty"], "implemented": [], "tested": []},
+      "evidence": {"documentation_checked_on": "2026-11-03", "retrieval_test": "not_run", "numeric_validation": "not_run"},
+      "caveats": ["Not the monthly GPCP product or another GPCP generation", "Verify units, day support, quality and latest dates before display"]
+    }
+  ]
+}

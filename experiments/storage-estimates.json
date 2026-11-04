@@ -1,0 +1,129 @@
+{
+  "model_version": "1",
+  "assumptions": [
+    "Decimal GB = 1,000,000,000 bytes; values are uncompressed float32",
+    "One byte mask per scalar cell; real packing/masks/compression vary",
+    "Quarter-degree illustrative pole-inclusive grid: 1440 by 721",
+    "One-degree illustrative pole-inclusive grid: 360 by 181",
+    "This is an array model, not a claim that each source uses these exact grids",
+    "History is [1940-01-01, 2026-01-01), exactly 86 years",
+    "Scenarios exclude coordinates, uncertainty, logs, tiles, copies and scratch",
+    "Provider transfer volume, queue time and achievable performance are unmeasured",
+    "Daily climatology can be streamed; full baseline retention is not required"
+  ],
+  "budget_bytes": {
+    "user_approximate": 100000000000,
+    "managed_cap": 90000000000,
+    "headroom": 10000000000
+  },
+  "scenarios": [
+    {
+      "name": "global_quarter_degree_31_days_daily",
+      "width": 1440,
+      "height": 721,
+      "frames": 31,
+      "variables": 1,
+      "float32_bytes": 128741760,
+      "float32_plus_byte_mask_bytes": 160927200,
+      "float32_plus_byte_mask_GB": 0.160927
+    },
+    {
+      "name": "global_quarter_degree_48_hours",
+      "width": 1440,
+      "height": 721,
+      "frames": 48,
+      "variables": 1,
+      "float32_bytes": 199342080,
+      "float32_plus_byte_mask_bytes": 249177600,
+      "float32_plus_byte_mask_GB": 0.249178
+    },
+    {
+      "name": "global_quarter_degree_365_days_daily_three_variables",
+      "width": 1440,
+      "height": 721,
+      "frames": 365,
+      "variables": 3,
+      "float32_bytes": 4547491200,
+      "float32_plus_byte_mask_bytes": 5684364000,
+      "float32_plus_byte_mask_GB": 5.684364
+    },
+    {
+      "name": "global_quarter_degree_86_years_monthly",
+      "width": 1440,
+      "height": 721,
+      "frames": 1032,
+      "variables": 1,
+      "float32_bytes": 4285854720,
+      "float32_plus_byte_mask_bytes": 5357318400,
+      "float32_plus_byte_mask_GB": 5.357318
+    },
+    {
+      "name": "global_quarter_degree_86_years_daily",
+      "width": 1440,
+      "height": 721,
+      "frames": 31412,
+      "variables": 1,
+      "float32_bytes": 130452779520,
+      "float32_plus_byte_mask_bytes": 163065974400,
+      "float32_plus_byte_mask_GB": 163.065974
+    },
+    {
+      "name": "global_quarter_degree_86_years_hourly",
+      "width": 1440,
+      "height": 721,
+      "frames": 753888,
+      "variables": 1,
+      "float32_bytes": 3130866708480,
+      "float32_plus_byte_mask_bytes": 3913583385600,
+      "float32_plus_byte_mask_GB": 3913.583386
+    },
+    {
+      "name": "global_one_degree_86_years_daily",
+      "width": 360,
+      "height": 181,
+      "frames": 31412,
+      "variables": 1,
+      "float32_bytes": 8187223680,
+      "float32_plus_byte_mask_bytes": 10234029600,
+      "float32_plus_byte_mask_GB": 10.23403
+    },
+    {
+      "name": "regional_20_degree_box_quarter_degree_31_days_hourly",
+      "width": 81,
+      "height": 81,
+      "frames": 744,
+      "variables": 1,
+      "float32_bytes": 19525536,
+      "float32_plus_byte_mask_bytes": 24406920,
+      "float32_plus_byte_mask_GB": 0.024407
+    },
+    {
+      "name": "global_quarter_degree_baseline_1991_2020_daily_inputs",
+      "width": 1440,
+      "height": 721,
+      "frames": 10958,
+      "variables": 1,
+      "float32_bytes": 45508135680,
+      "float32_plus_byte_mask_bytes": 56885169600,
+      "float32_plus_byte_mask_GB": 56.88517
+    },
+    {
+      "name": "global_quarter_degree_366_day_climatology",
+      "width": 1440,
+      "height": 721,
+      "frames": 366,
+      "variables": 1,
+      "float32_bytes": 1519983360,
+      "float32_plus_byte_mask_bytes": 1899979200,
+      "float32_plus_byte_mask_GB": 1.899979
+    }
+  ],
+  "display_buffer": {
+    "overview_width": 1440,
+    "overview_height": 720,
+    "rgba_bytes_per_pixel": 4,
+    "frames": 5,
+    "decoded_bytes": 20736000,
+    "excludes": "GPU copies, map engine, browser, geometry, image decoder and other textures"
+  }
+}

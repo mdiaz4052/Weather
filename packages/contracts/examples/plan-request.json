@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1",
+  "example_only": true,
+  "dataset_id": "copernicus.era5.daily.single-levels",
+  "variable_id": "air_temperature_2m",
+  "statistic": "daily_mean",
+  "support": "daily",
+  "start_inclusive": "2020-01-01",
+  "end_exclusive": "2020-02-01",
+  "calendar": "proleptic_gregorian",
+  "day_convention": "UTC",
+  "bbox_wsen": null,
+  "crosses_antimeridian": false,
+  "requested_grid": {"mode": "global_overview", "target_degrees": 1.0, "provider_support_unverified": true},
+  "display_units": "degC",
+  "mode": "absolute",
+  "baseline_id": null,
+  "palette": {"id": "temperature-accessible-v1-proposal", "range": [-50, 50], "fixed_during_playback": true},
+  "retention": "evictable"
+}
