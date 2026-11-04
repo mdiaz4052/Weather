@@ -28,6 +28,7 @@ Goal G0: another person or tool can understand the project and implement the nex
 | --- | --- | --- |
 | T-000 | done | Local Git, specification, source research, skeleton/contracts, decisions/worklog, bounded capacity experiment, and passing skeleton checks. See W-20261103-01. Proposed architecture and integration gates remain explicit. |
 | T-015 | done | Add the user's quick next-steps page and require every contributor to check it before each completed task's final response. See W-20261103-02 and D-010. |
+| T-016 | done | Publish the local Git history to the requested `CliMaps` branch in `mdiaz4052/Weather`, configure upstream tracking, and record the repository location. See W-20261103-03. |
 
 M0 is a foundation deliverable, not a declaration that the user approved every proposed stack choice or that any climate connector works.
 

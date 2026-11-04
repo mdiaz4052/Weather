@@ -31,6 +31,18 @@ Concise development history, not a transcript. Git is the source-change history;
 - Limitations: this is a documentation/workflow change; no app code or provider integrations were added.
 - Next: T-002 local setup checks and T-001 bounded source retrieval, with user source setup needed for the latter.
 
+## W-20261103-03 — Publish local history to Weather/CliMaps
+
+- Date: 2026-11-03, America/New_York. Task: T-016. Milestone: M0 foundation maintenance.
+- Tool: ChatGPT / Codex Desktop. Model: GPT-6 family reported by runtime instructions; exact model version unavailable.
+- Authorization: user requested a new branch named `CliMaps` in `https://github.com/mdiaz4052/Weather` and a push of this local repository.
+- Result: confirmed the branch name was available, created local `CliMaps`, configured `origin` as `https://github.com/mdiaz4052/Weather.git`, and pushed the three existing local commits. Local `CliMaps` now tracks `origin/CliMaps`. GitHub independently reported the matching initial tip `f721ca078cca1fba002009bad77f1658092cda76`.
+- History: preserved the local repository's own ancestry; no merge into the remote default branch, force push, or pull request was performed. Only the new `CliMaps` branch was pushed.
+- Documentation: updated README/current status and the completed-task record. This follow-up record is committed and pushed to the same branch after the initial history upload.
+- NEXT.md review: checked; no changes needed. Publishing the repository does not change the next implementation steps or required source setup.
+- Validation: initial push succeeded and its commit ID was confirmed through GitHub. Documentation checks and whitespace checks are run before the follow-up commit; the remote tip and clean/upstream-tracking state are verified after its push.
+- Next: T-002 local setup and T-001 bounded source retrieval.
+
 ## Template for later work
 
 ```text

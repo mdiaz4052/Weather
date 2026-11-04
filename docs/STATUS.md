@@ -2,6 +2,8 @@
 
 Updated: 2026-11-03 (America/New_York). M0 session-zero specification is complete; implementation has not started. Next milestone: M1a.
 
+Repository: [mdiaz4052/Weather, branch CliMaps](https://github.com/mdiaz4052/Weather/tree/CliMaps). Local `CliMaps` tracks `origin/CliMaps`; the original local commit history was preserved when publishing this branch.
+
 ## Confirmed by the user
 
 - Personal exploration first; public and educational use remain possibilities.
