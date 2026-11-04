@@ -1,0 +1,23 @@
+# Data, credentials, generated output, and local tooling
+.env
+.env.*
+!.env.example
+.cdsapirc
+*.pem
+*.key
+data/*
+!data/README.md
+!data/.gitkeep
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+*.log
+.DS_Store
+Thumbs.db
